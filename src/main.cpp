@@ -398,6 +398,37 @@ void drawObjectTextureNormalShadow(obj::Model * model, glm::mat4 modelMatrix, GL
 	//glUseProgram(0);
 }
 
+void drawObjectUberShader(obj::Model * model, glm::mat4 modelMatrix, GLuint texture, GLuint normalMap)
+{
+	GLuint program = programNormalShadow;
+
+	glUseProgram(program);
+
+	Core::SetActiveTexture(texture, "textureColor", program, 0);
+	Core::SetActiveTexture(normalMap, "textureNormal", program, 1);
+	Core::SetActiveTexture(depthTexture, "depthMap", program, 2);
+
+	glUniform3f(glGetUniformLocation(program, "lightDir"), lightDir.x, lightDir.y, lightDir.z);
+	glUniform3f(glGetUniformLocation(program, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
+
+	glm::mat4 transformation = perspectiveMatrix * cameraMatrix * modelMatrix;
+
+	glm::mat4 projectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 30);
+	glm::mat4 inverseLigthDirection = glm::lookAt(-lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4 lightMVP = projectionMatrix * inverseLigthDirection * modelMatrix;
+	glm::mat4 ModelViewMatrix = cameraMatrix * modelMatrix;
+
+	glUniformMatrix4fv(glGetUniformLocation(program, "modelViewProjectionMatrix"), 1, GL_FALSE, (float*)&transformation);
+	glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, GL_FALSE, (float*)&modelMatrix);
+	glUniformMatrix4fv(glGetUniformLocation(program, "lightMVP"), 1, GL_FALSE, (float*)&lightMVP);
+	glUniformMatrix4fv(glGetUniformLocation(program, "modelViewMatrix"), 1, GL_FALSE, (float*)&ModelViewMatrix);
+
+
+	Core::DrawModelT(model, &tangent[0]);
+
+	glUseProgram(0);
+}
+
 void renderScene()
 {
 	
