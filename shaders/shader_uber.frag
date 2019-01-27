@@ -28,6 +28,12 @@ float ao;
 
 const float PI = 3.14159265359;
 
+const vec3 DiffuseLight = vec3(0.15, 0.05, 0.0);
+const vec3 RimColor  = vec3(0.2, 0.2, 0.2);
+
+float fogFactorVertex=0;
+const vec3 fogColor = vec3(0.5,0.5,0.5);
+
 /* Material functions */
 
 float Distribution(vec3 N, vec3 H, float roughness)
@@ -109,8 +115,7 @@ void main()
 	
 	/* Materials */
 	
-	lightColors = vec3(300.0);
-	lightPos = vec3(10.0);
+	vec3 lightColors = vec3(300.0);
 	ao = 11.0;
 
 	metallic = texture2D(textureMetallic, interpTexCoord).r;
@@ -125,9 +130,9 @@ void main()
     F0 = mix(F0, albedo, metallic);
 
     // calculate radiance
-    vec3 L = normalize(lightPos - interpPos);
+    vec3 L = normalize(lightPosition.xyz - interpPos);
     vec3 H = normalize(V + L);
-    float distance    = length(lightPos - interpPos);
+    float distance    = length(lightPosition.xyz - interpPos);
     float attenuation = 1.0 / (distance * distance);
     vec3 radiance     = lightColors * attenuation; 
 	
@@ -150,8 +155,49 @@ void main()
     vec3 color = ambient + Lo;
 	
     //color = color / (color + vec3(1.0));
-    //color = pow(color, vec3(1.0/2.0));  
+    //color = pow(color, vec3(1.0/2.0)); 
+
+
+	/* Fog */
+	//diffuse lighting
+	vec3 vecdiffuse = DiffuseLight * max(0, dot(L, interpPosWorld));
+	
+	//rim lighting
+	
+	float rim = 1 - max(dot(V, interpPosWorld), 0.0);
+	rim = smoothstep(0.6, 1.0, rim);
+	vec3 finalRim = RimColor * vec3(rim, rim, rim);
+
+
+	//get all lights and texture
+	vec3 finalColor = finalRim + vecdiffuse + albedo;
+
+	vec3 c = vec3(0,0,0);
+	float dist = 0;
+	float fogFactor = 0;
    
+	/*if(depthFog == 1) {
+     	if(depthFogChanges == 0){
+			dist = abs(interpPos.z);
+		} else {
+			dist = (gl_FragCoord.z / gl_FragCoord.w);
+		}
+	} else {
+		dist = length(interpPos);
+	}*/
+	
+	dist = (gl_FragCoord.z / gl_FragCoord.w);
+
+	//float be = (10.0 - interpPos.y)*0.004;
+	//float bi = (10.0 - interpPos.y)*0.001;
+
+	float be = 0.025 * smoothstep(0.0, 6.0, 10.0 - interpPos.y);
+	float bi = 0.035 * smoothstep(0.0, 80, 10.0 - interpPos.y);
+	float ext =  exp(-dist * be);
+	float insc = exp(-dist * bi);
+		
+	c = finalColor * ext + fogColor * (1 - insc);
+
 
 
 	/* Normal map */
