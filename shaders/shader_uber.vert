@@ -23,6 +23,15 @@ out vec3 interpPosWorld;
 
 out vec4 lightPosition;
 
+//fog
+out float distVertex;
+out float fogFactorVertex;
+out float normalizedDepth;
+out float fogFactorVF;
+//
+
+//interpolatedPosw moim shaderze jest równe viewSpace w przykładzie
+
 void main()
 {
 	gl_Position = modelViewProjectionMatrix * vec4(vertexPosition, 1.0);
@@ -49,7 +58,13 @@ void main()
 	interpPosWorld = normalize(interpPosWorld);
 	
 	lightPosition =  lightMVP * vec4(vertexPosition, 1.0);
+	
+	//fog
+	distVertex = abs(interpPos.z);
+	normalizedDepth = (gl_Position.z /gl_Position.w);
+	const float FogDensity = 0.05;
+	fogFactorVF = 1.0 /exp( (distVertex * FogDensity)* (distVertex * FogDensity));
+	fogFactorVF = clamp( fogFactorVF, 0.0, 1.0 );
+	//
 }
-// w razie czego do poprawki jest interpTexCoord,
-// bo tutaj jest modyfikowana jego wartość a w normalnym 
-// shadow shaderze nie
+

@@ -11,7 +11,7 @@ e:\tmp\cgp5\cgp\src\main.cpp(450): warning C4305: 'argument': truncation from 'd
 e:\tmp\cgp5\cgp\src\main.cpp(508): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 e:\tmp\cgp5\cgp\src\main.cpp(550): warning C4018: '<': signed/unsigned mismatch
   Generating code
-  3 of 1491 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  0 of 1491 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
