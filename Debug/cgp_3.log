@@ -1,0 +1,14 @@
+﻿  main.cpp
+e:\tmp\cgp5\cgp\src\main.cpp(132): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+e:\tmp\cgp5\cgp\src\main.cpp(132): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+e:\tmp\cgp5\cgp\src\main.cpp(149): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+e:\tmp\cgp5\cgp\src\main.cpp(149): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+e:\tmp\cgp5\cgp\src\main.cpp(450): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+e:\tmp\cgp5\cgp\src\main.cpp(508): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+e:\tmp\cgp5\cgp\src\main.cpp(550): warning C4018: '<': signed/unsigned mismatch
+Camera.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+  cgp_3.vcxproj -> E:\tmp\CGP5\CGP\Debug\cgp_3.exe
