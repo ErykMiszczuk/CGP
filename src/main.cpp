@@ -52,6 +52,7 @@ GLuint textureFish;
 GLuint textureBottomPlane;
 GLuint textureSink;
 GLuint textureShip, textureShipNormal, textureShipMetallic, textureShipSmoothness;
+GLuint textureNone, textureNoneNormal, textureNoneMetallic, textureNoneSmoothness;
 
 GLuint cubemapTexture;
 
@@ -484,7 +485,7 @@ void renderScene()
 	drawSkybox(glm::translate(glm::vec3(cameraPos.x, cameraPos.y, cameraPos.z)), skybox);
 	//
 	//drawObjectTextureShadows(&renderModel, renderTarget, textureAsteroid);
-	drawObjectTextureShadows(&dalekModel, dalekModelMatrix, textureDalek);
+	drawObjectUberShader(&dalekModel, dalekModelMatrix, textureDalek, textureNoneNormal, textureNoneMetallic, textureNoneSmoothness);
 	//drawObjectTextureShadows(&sphereModel, planetModelMatrix, textureEarth);
 	//drawObjectTextureNormal(&sphereModel, planetModelMatrix, textureEarth, textureEarthNormal);
 	//drawObjectTextureNormalShadow(&sphereModel, planetModelMatrix, textureEarth, textureEarthNormal);
@@ -535,6 +536,11 @@ void init()
 	textureShipMetallic = Core::LoadTexture("textures/orca_sub_met.png");
 	textureShipSmoothness = Core::LoadTexture("textures/orca_sub_smo.png");
 	textureShipNormal = Core::LoadTexture("textures/orca_sub_nor.png");
+	textureNone = Core::LoadTexture("textures/none_albedo.png");
+	textureNoneNormal = Core::LoadTexture("textures/none_normal.png");
+	textureNoneMetallic = Core::LoadTexture("textures/none_metallic.png");
+	textureNoneSmoothness = Core::LoadTexture("textures/none_smoothnes.png");
+
 
 	skybox = Core::setupCubeMap("textures/xpos.png", "textures/xneg.png", "textures/ypos.png", "textures/yneg.png", "textures/zpos.png", "textures/zneg.png");
 
