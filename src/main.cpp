@@ -51,7 +51,7 @@ GLuint skybox;
 GLuint textureFish;
 GLuint textureBottomPlane;
 GLuint textureSink;
-GLuint textureShip;
+GLuint textureShip, textureShipNormal, textureShipMetallic, textureShipSmoothness;
 
 GLuint cubemapTexture;
 
@@ -398,7 +398,7 @@ void drawObjectTextureNormalShadow(obj::Model * model, glm::mat4 modelMatrix, GL
 	//glUseProgram(0);
 }
 
-void drawObjectUberShader(obj::Model * model, glm::mat4 modelMatrix, GLuint texture, GLuint normalMap)
+void drawObjectUberShader(obj::Model * model, glm::mat4 modelMatrix, GLuint texture, GLuint normalMap, GLuint metallic, GLuint smoothness)
 {
 	GLuint program = programNormalShadow;
 
@@ -407,6 +407,8 @@ void drawObjectUberShader(obj::Model * model, glm::mat4 modelMatrix, GLuint text
 	Core::SetActiveTexture(texture, "textureColor", program, 0);
 	Core::SetActiveTexture(normalMap, "textureNormal", program, 1);
 	Core::SetActiveTexture(depthTexture, "depthMap", program, 2);
+	Core::SetActiveTexture(metallic, "textureMetallic", program, 3);
+	Core::SetActiveTexture(smoothness, "textureRoughness", program, 4);
 
 	glUniform3f(glGetUniformLocation(program, "lightDir"), lightDir.x, lightDir.y, lightDir.z);
 	glUniform3f(glGetUniformLocation(program, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
@@ -494,8 +496,8 @@ void renderScene()
 		drawObjectTextureShadows(&bottomPlaneModel, glm::translate(glm::vec3(108, -5, iterm)), textureBottomPlane);
 		iterm += 108;
 	}
-	drawObjectTextureShadows(&shipModel, shipModelMatrix, textureShip);
-	drawObjectTextureShadows(&shipModel, sink, textureSink);
+	drawObjectUberShader(&shipModel, shipModelMatrix, textureShip, textureShipNormal, textureShipMetallic, textureShipSmoothness);
+	drawObjectUberShader(&shipModel, sink, textureSink, textureShipNormal, textureShipMetallic, textureShipSmoothness);
 	//
 
 	glutSwapBuffers();
@@ -530,6 +532,9 @@ void init()
 	textureFish = Core::LoadTexture("textures/rybauvmap.png");
 	bottomPlaneModel = obj::loadModelFromFile("models/bottom1.obj");
 	textureBottomPlane = Core::GenerateTexture(100, 100, 30, 1);
+	textureShipMetallic = Core::LoadTexture("textures/orca_sub_met.png");
+	textureShipSmoothness = Core::LoadTexture("textures/orca_sub_smo.png");
+	textureShipNormal = Core::LoadTexture("textures/orca_sub_nor.png");
 
 	skybox = Core::setupCubeMap("textures/xpos.png", "textures/xneg.png", "textures/ypos.png", "textures/yneg.png", "textures/zpos.png", "textures/zneg.png");
 
