@@ -94,5 +94,11 @@
     <None Include="shaders\shader_uber.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="shaders\shader_material.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\shader_material.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
