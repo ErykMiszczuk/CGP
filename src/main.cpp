@@ -18,6 +18,7 @@ GLuint programShadow;
 GLuint programNormal;
 GLuint programNormalShadow;
 GLuint programSkybox;
+GLuint programMaterial;
 
 GLuint depthTexture;
 GLuint FramebufferObject;
@@ -39,7 +40,7 @@ float cameraAngle = 0;
 
 glm::mat4 cameraMatrix, perspectiveMatrix;
 
-glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -0.9f, -1.0f));
+glm::vec3 lightDir = glm::normalize(glm::vec3(90.0f, -90.0f, -90.0f));
 
 glm::quat rotation = glm::quat(1, 0, 0, 0);
 glm::vec3 rotationChangeXYZ = glm::vec3(0, 0, 0);
@@ -59,11 +60,11 @@ GLuint cubemapTexture;
 std::vector<glm::vec4> planets;
 std::vector<float> tangent(1203);
 
-glm::vec3 fishVectors[10];
+//glm::vec3 fishVectors[10];
 
 const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 768;
-int NUM_FISH = 10;
+//int NUM_FISH = 10;
 
 //particle structure
 struct particle {
@@ -560,6 +561,28 @@ void drawObjectUberShader(obj::Model * model, glm::mat4 modelMatrix, GLuint text
 	glUseProgram(0);
 }
 
+void drawObjectMaterial(obj::Model * model, glm::mat4 modelMatrix, GLuint albedo, GLuint metallic, GLuint smoothness)
+{
+	GLuint program = programMaterial;
+
+	glUseProgram(program);
+
+	glUniform3f(glGetUniformLocation(program, "lightDir"), lightDir.x, lightDir.y, lightDir.z);
+	glUniform3f(glGetUniformLocation(program, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
+
+	Core::SetActiveTexture(albedo, "texture_albedo", program, 0);
+	Core::SetActiveTexture(metallic, "texture_metallic", program, 1);
+	Core::SetActiveTexture(smoothness, "texture_smoothness", program, 2);
+
+	glm::mat4 transformation = perspectiveMatrix * cameraMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(program, "modelViewProjectionMatrix"), 1, GL_FALSE, (float*)&transformation);
+	glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, GL_FALSE, (float*)&modelMatrix);
+
+	Core::DrawModel(model);
+
+	glUseProgram(0);
+}
+
 void renderScene()
 {
 	
@@ -615,7 +638,8 @@ void renderScene()
 	drawSkybox(glm::translate(glm::vec3(cameraPos.x, cameraPos.y, cameraPos.z)), skybox);
 	//
 	//drawObjectTextureShadows(&renderModel, renderTarget, textureAsteroid);
-	drawObjectUberShader(&dalekModel, dalekModelMatrix, textureDalek, textureNoneNormal, textureNoneMetallic, textureNoneSmoothness);
+	//drawObjectUberShader(&dalekModel, dalekModelMatrix, textureDalek, textureNoneNormal, textureNoneMetallic, textureNoneSmoothness);
+	drawObjectMaterial(&dalekModel, dalekModelMatrix, textureDalek, textureNoneMetallic, textureNoneSmoothness);
 	//drawObjectTextureShadows(&sphereModel, planetModelMatrix, textureEarth);
 	//drawObjectTextureNormal(&sphereModel, planetModelMatrix, textureEarth, textureEarthNormal);
 	//drawObjectTextureNormalShadow(&sphereModel, planetModelMatrix, textureEarth, textureEarthNormal);
@@ -627,7 +651,8 @@ void renderScene()
 		drawObjectTextureShadows(&bottomPlaneModel, glm::translate(glm::vec3(108, -5, iterm)), textureBottomPlane);
 		iterm += 108;
 	}
-	drawObjectUberShader(&shipModel, shipModelMatrix, textureShip, textureShipNormal, textureShipMetallic, textureShipSmoothness);
+	//drawObjectUberShader(&shipModel, shipModelMatrix, textureShip, textureShipNormal, textureShipMetallic, textureShipSmoothness);
+	drawObjectMaterial(&shipModel, shipModelMatrix, textureShip, textureShipMetallic, textureShipSmoothness);
 	drawObjectUberShader(&shipModel, sink, textureSink, textureShipNormal, textureShipMetallic, textureShipSmoothness);
 	//
 
@@ -645,6 +670,7 @@ void init()
 	programNormal = shaderLoader.CreateProgram("shaders/shader_normal.vert", "shaders/shader_normal.frag");
 	programNormalShadow = shaderLoader.CreateProgram("shaders/shader_normalshadow.vert", "shaders/shader_normalshadow.frag");
 	programSkybox = shaderLoader.CreateProgram("shaders/shader_skybox.vert", "shaders/shader_skybox.frag");
+	programMaterial = shaderLoader.CreateProgram("shaders/shader_material.vert", "shaders/shader_material.frag");
 
 	sphereModel = obj::loadModelFromFile("models/sphere.obj");
 	renderModel = obj::loadModelFromFile("models/render.obj");

@@ -30,6 +30,8 @@
     <None Include="shaders\shader_color.vert" />
     <None Include="shaders\shader_depth.frag" />
     <None Include="shaders\shader_depth.vert" />
+    <None Include="shaders\shader_material.frag" />
+    <None Include="shaders\shader_material.vert" />
     <None Include="shaders\shader_normal.frag" />
     <None Include="shaders\shader_normal.vert" />
     <None Include="shaders\shader_normalshadow.frag" />
