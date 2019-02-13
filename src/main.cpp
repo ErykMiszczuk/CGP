@@ -411,7 +411,7 @@ void renderScene()
 	cameraMatrix = createCameraMatrix();
 	perspectiveMatrix = Core::createPerspectiveMatrix();
 
-	glm::mat4 projectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 30);
+	glm::mat4 projectionMatrix = glm::ortho<float>(-40, 40, -40, 40, -20, 40);
 	glm::mat4 inverseLigthDirection = glm::lookAt(-lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glm::mat4 planetModelMatrix = glm::translate(glm::vec3(sin(-time), 2.0, cos(-time))) * glm::scale(glm::vec3(3.0));
 	glm::mat4 dalekModelMatrix = glm::translate(glm::vec3(-2.5, 4.0, 0.0)) * glm::scale(glm::vec3(0.025));
