@@ -12,6 +12,14 @@ in vec2 interpTexCoord;
 
 in vec4 lightPosition;
 
+vec3 calculateNormalizedRGB(float r, float g, float b) {
+	return vec3(r/255, g/255, b/255);
+}
+
+vec4 calculateNormalizedRGBA(float r, float g, float b, float a) {
+	return vec4(r/255, g/255, b/255, a/255);
+}
+
 float calculateShadow(vec4 lightPosition, vec3 normal)
 {
 	vec3 divided = lightPosition.xyz / lightPosition.w;
@@ -67,10 +75,10 @@ void main()
 
 	vec4 finalColor = vec4((color-shadow) * diffuse, 1.0) + vec4(vec3(1.0) * specular, 0.0);
 
-	float FOG_DENSITY = 0.05;
+	float FOG_DENSITY = 0.1;
 	float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
 	float fogAmount = fogFactorExp2(fogDistance, FOG_DENSITY);
-	vec4 fogColor = vec4(1.0); // white
+	vec4 fogColor = calculateNormalizedRGBA(32, 32, 64, 255); // white
 
 	gl_FragColor = mix(finalColor, fogColor, fogAmount);
 
