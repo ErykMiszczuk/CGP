@@ -11,8 +11,8 @@ e:\eryk\tmp\cgp\src\main.cpp(417): warning C4305: 'argument': truncation from 'd
 e:\eryk\tmp\cgp\src\main.cpp(475): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 e:\eryk\tmp\cgp\src\main.cpp(514): warning C4018: '<': signed/unsigned mismatch
   Generating code
-  1 of 1489 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
+  0 of 1489 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   cgp_3.vcxproj -> E:\Eryk\tmp\CGP\Release\cgp_3.exe

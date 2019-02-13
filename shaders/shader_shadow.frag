@@ -44,6 +44,12 @@ float calculateShadow(vec4 lightPosition, vec3 normal)
 	return shadow;
 }
 
+float fogFactorExp2(float dist, float density) {
+  const float LOG2 = -1.442695;
+  float d = density * dist;
+  return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);
+}
+
 void main()
 {
 	vec2 modifiedTexCoord = vec2(interpTexCoord.x, 1.0 - interpTexCoord.y);
@@ -59,7 +65,17 @@ void main()
 	// color = 0.15 * color + 0.85 * calculateShadow(lightPosition);
 	float shadow = calculateShadow(lightPosition, normal);
 
-	gl_FragColor = vec4((color-shadow) * diffuse, 1.0) + vec4(vec3(1.0) * specular, 0.0);
+	vec4 finalColor = vec4((color-shadow) * diffuse, 1.0) + vec4(vec3(1.0) * specular, 0.0);
+
+	float FOG_DENSITY = 0.05;
+	float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
+	float fogAmount = fogFactorExp2(fogDistance, FOG_DENSITY);
+	vec4 fogColor = vec4(1.0); // white
+
+	gl_FragColor = mix(finalColor, fogColor, fogAmount);
+
+
+//	gl_FragColor = vec4((color-shadow) * diffuse, 1.0) + vec4(vec3(1.0) * specular, 0.0);
 	//gl_FragColor = vec4(shadow, shadow, shadow, 1.0);
 
 	//gl_FragColor = vec4(color * diffuse, 1.0) + vec4(vec3(1.0) * specular, 0.0);
