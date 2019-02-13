@@ -78,7 +78,7 @@ void main()
 	float FOG_DENSITY = 0.1;
 	float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
 	float fogAmount = fogFactorExp2(fogDistance, FOG_DENSITY);
-	vec4 fogColor = calculateNormalizedRGBA(32, 32, 64, 255); // white
+	vec4 fogColor = calculateNormalizedRGBA(32, 32, 64, 255 / (fogAmount*fogAmount)); // white
 
 	gl_FragColor = mix(finalColor, fogColor, fogAmount);
 
