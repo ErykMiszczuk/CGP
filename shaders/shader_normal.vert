@@ -23,7 +23,7 @@ void main()
 {
 	gl_Position = modelViewProjectionMatrix * vec4(vertexPosition, 1.0);
 	
-	interpTexCoord = vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y);
+	interpTexCoord = vec2(vertexTexCoord.x, vertexTexCoord.y);
 	interpNormal = normalize(modelMatrix * vec4(vertexNormal, 0.0)).xyz;
 	interpPos = (modelMatrix * vec4(vertexPosition, 1.0)).xyz;
 	
