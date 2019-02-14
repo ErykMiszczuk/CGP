@@ -60,14 +60,9 @@ GLuint textureNone, textureNoneNormal, textureNoneMetallic, textureNoneSmoothnes
 
 GLuint cubemapTexture;
 
-//std::vector<glm::vec4> planets;
 std::vector<float> tangent(1203);
 
-//glm::vec3 fishVectors[10];
 
-const unsigned int SCR_WIDTH = 1024;
-const unsigned int SCR_HEIGHT = 768;
-//int NUM_FISH = 10;
 
 //particle structure
 struct particle {
@@ -183,14 +178,11 @@ void countFishes()
 		old_time = time - 0.1;
 	}
 
-	
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.50f, 0.50f, 0.50f, 1.0f);
 
 	glm::mat4 FishModelMatrix;
 	glm::vec3 attractor(60 * sin(time / 2),-120, 60 * cos(time / 2));
-	//glm::vec3 attractor(0,0, 10);
 	float cohesion_distance = 50;
 	float aligment_distance = 40;
 	float separation_distance = 30;
@@ -239,19 +231,10 @@ void countFishes()
 			eva.speed = eva.speed + (40.0f * separation + 0.20f * cohesion / cohesion_size + 0.300f * aligment / aligment_size + 10 * xxx)*(time - old_time);
 		}
 		eva.location = adam.location + eva.speed*(time - old_time);
-		
-		/*
-		XXXX   XXX  XXXXX  XXX  XXXXX  XXX   XXX  X   X
-		X   X X	  X   X   X   X   X     X   X   X XX  X
-		XXXX  X   X   X   XXXXX   X     X   X   X X X X
-		X	X X   X   X   X   X   X     X   X   X X  XX
-		X	X  XXX    X   X   X   X    XXX   XXX  X   X
-		*/
-		//importart part for adding rotation
+
 		glm::vec3 rotation_axis = glm::normalize(glm::cross(glm::vec3(0.0, 0.0, 1.0), glm::normalize(eva.speed)));
 		float angle = glm::acos(glm::dot(rotation_axis, glm::normalize(eva.speed)));
-		//myfile << angle << '\n';
-		//myfile << rotation_axis.x << ' ' << rotation_axis.y << ' ' << rotation_axis.z << ' ' << '\n';
+
 
 		if (glm::length(glm::cross(glm::vec3(0.0, 0.0, 1.0), glm::normalize(eva.speed))) < 0.00001) {
 			rotation_axis = glm::vec3(0.0, 0.0, 1.0);
@@ -274,9 +257,7 @@ glm::mat4 fish_model_matrix(particle fish) {
 	return glm::translate(fish.location / 10.0)*fish.rotation*glm::scale(glm::vec3(0.15))*glm::translate(glm::vec3(2.5, 0, -1));
 }
 
-// fish initialisation
 void init_fish() {
-
 
 	//create fish particles
 	//...
@@ -335,7 +316,6 @@ void drawObjectColor(obj::Model * model, glm::mat4 modelMatrix, glm::vec3 color)
 
 void drawSkybox(glm::mat4 modelMatrix, GLuint skyboxId)
 {
-	//todo
 	GLuint program = programSkybox;
 
 	glUseProgram(program);
@@ -349,9 +329,7 @@ void drawSkybox(glm::mat4 modelMatrix, GLuint skyboxId)
 	vertexData.Attribs[0].Pointer = cubeVertices;
 	vertexData.Attribs[0].Size = 4;
 	vertexData.NumVertices = 36;
-	//not sure about these values...
 
-	//binding skybox texture
 	glUniform1i(glGetUniformLocation(program, "cubeSampler"), skyboxId);
 	glActiveTexture(GL_TEXTURE0 + skyboxId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxId);
@@ -457,9 +435,8 @@ void drawObjectTextureNormalShadow(obj::Model * model, glm::mat4 modelMatrix, GL
 
 	Core::SetActiveTexture(texture, "textureColor", program, 0);
 	Core::SetActiveTexture(normalMap, "textureNormal", program, 1);
-	// new
+
 	Core::SetActiveTexture(depthTexture, "depthMap", program, 2);
-	//
 
 	glUniform3f(glGetUniformLocation(program, "lightDir"), lightDir.x, lightDir.y, lightDir.z);
 	glUniform3f(glGetUniformLocation(program, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
@@ -469,67 +446,18 @@ void drawObjectTextureNormalShadow(obj::Model * model, glm::mat4 modelMatrix, GL
 	glm::mat4 projectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 30);
 	glm::mat4 inverseLigthDirection = glm::lookAt(-lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glm::mat4 lightMVP = projectionMatrix * inverseLigthDirection * modelMatrix;
-	// new
+
 	glm::mat4 ModelViewMatrix = cameraMatrix * modelMatrix;
-	//
+
 	glUniformMatrix4fv(glGetUniformLocation(program, "modelViewProjectionMatrix"), 1, GL_FALSE, (float*)&transformation);
 	glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, GL_FALSE, (float*)&modelMatrix);
 	glUniformMatrix4fv(glGetUniformLocation(program, "lightMVP"), 1, GL_FALSE, (float*)&lightMVP);
-	// new
+
 	glUniformMatrix4fv(glGetUniformLocation(program, "modelViewMatrix"), 1, GL_FALSE, (float*)&ModelViewMatrix);
-	//
-
-	//GLuint program = programNormal;
-
-	//glUseProgram(program);
-
-	/*Core::SetActiveTexture(texture, "textureColor", program, 0);
-	Core::SetActiveTexture(normalMap, "textureNormal", program, 1);
-
-	glUniform3f(glGetUniformLocation(program, "lightDir"), lightDir.x, lightDir.y, lightDir.z);
-	glUniform3f(glGetUniformLocation(program, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);*/
-
-	//glm::mat4 transformation = perspectiveMatrix * cameraMatrix * modelMatrix;
-	//glm::mat4 ModelViewMatrix = cameraMatrix * modelMatrix;
-	//glUniformMatrix4fv(glGetUniformLocation(program, "modelViewProjectionMatrix"), 1, GL_FALSE, (float*)&transformation);
-	//glUniformMatrix4fv(glGetUniformLocation(program, "modelViewMatrix"), 1, GL_FALSE, (float*)&ModelViewMatrix);
-	//glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, GL_FALSE, (float*)&modelMatrix);
 
 	Core::DrawModelT(model, &tangent[0]);
-	//Core::DrawModel(model);
-/*
-*	To podejœcie niestety nie dzia³a, bd musia³ zmiksowaæ dwa shadery jednak. No ale có¿, próbowa³em...
-*	zostanie jeszcze do poprawki sam cieñ, bo jest pikselowy. No i ta trawa... chwilê to jeszcze zajmie
-*/
 
 	glUseProgram(0);
-	//GLuint program = programNormalShadow;
-
-	//glUseProgram(program);
-
-	//Core::SetActiveTexture(texture, "textureColor", program, 0);
-	//Core::SetActiveTexture(normalMap, "textureNormal", program, 1);
-	////Core::SetActiveTexture(texture, "textureSampler", program, 2);
-	//Core::SetActiveTexture(depthTexture, "depthMap", program, 2);
-
-	//glUniform3f(glGetUniformLocation(program, "lightDir"), lightDir.x, lightDir.y, lightDir.z);
-	//glUniform3f(glGetUniformLocation(program, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
-
-	//glm::mat4 transformation = perspectiveMatrix * cameraMatrix * modelMatrix;
-	//glm::mat4 ModelViewMatrix = cameraMatrix * modelMatrix;
-
-	//glm::mat4 projectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 30);
-	//glm::mat4 inverseLigthDirection = glm::lookAt(-lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	//glm::mat4 lightMVP = projectionMatrix * inverseLigthDirection * modelMatrix;
-
-	//glUniformMatrix4fv(glGetUniformLocation(program, "modelViewProjectionMatrix"), 1, GL_FALSE, (float*)&transformation);
-	//glUniformMatrix4fv(glGetUniformLocation(program, "modelViewMatrix"), 1, GL_FALSE, (float*)&ModelViewMatrix);
-	//glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, GL_FALSE, (float*)&modelMatrix);
-	//glUniformMatrix4fv(glGetUniformLocation(program, "lightMVP"), 1, GL_FALSE, (float*)&lightMVP);
-
-	//Core::DrawModelT(model, &tangent[0]);
-
-	//glUseProgram(0);
 }
 
 void drawObjectUberShader(obj::Model * model, glm::mat4 modelMatrix, GLuint albedo, GLuint normal, GLuint metallic, GLuint smoothness)
@@ -578,7 +506,6 @@ void drawObjectMaterial(obj::Model * model, glm::mat4 modelMatrix, GLuint albedo
 
 void renderScene()
 {
-	
 	float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 
 	cameraDir = (cameraDir * time * shipVelocity);
@@ -591,27 +518,19 @@ void renderScene()
 	cameraMatrix = createCameraMatrix();
 	perspectiveMatrix = Core::createPerspectiveMatrix();
 
-<<<<<<< HEAD
 	glm::mat4 projectionMatrix = glm::ortho<float>(-40, 40, -40, 40, -20, 40);
-=======
+
 	countFishes();
 
-	glm::mat4 projectionMatrix = glm::ortho<float>(-30, 30, -30, 30, -30, 40);
->>>>>>> aa8fea753d4d9e0faad9f43295b9120bf7ffee8c
 	glm::mat4 inverseLigthDirection = glm::lookAt(-lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glm::mat4 planetModelMatrix = glm::translate(glm::vec3(sin(-time), 2.0, cos(-time))) * glm::scale(glm::vec3(3.0));
 	glm::mat4 dalekModelMatrix = glm::translate(glm::vec3(-2.5, 4.0, 0.0)) * glm::scale(glm::vec3(0.025));
 	glm::mat4 renderTarget = glm::translate(glm::vec3(0, -5, 0)) * glm::rotate(-1.56f, glm::vec3(1, 0, 0)) * glm::rotate(1.56f, glm::vec3(0, 1, 0)) * glm::scale(glm::vec3(7, 14, 14));
 	glm::mat4 lightMVP = projectionMatrix * inverseLigthDirection;
-
-	/////////////
 	glm::mat4 shipRotation = glm::mat4_cast(glm::inverse(rotation));
-
 	glm::mat4 shipInitialTransformation = glm::translate(glm::vec3(0, -0.25f, 0)) * glm::rotate(glm::radians(180.0f), glm::vec3(0, 1, 0)) * glm::scale(glm::vec3(0.25f));
 	glm::mat4 shipModelMatrix = glm::translate(cameraPos + cameraDir) * shipRotation * shipInitialTransformation;
-
 	glm::mat4 sink = glm::translate(glm::vec3(0, -2.5f, 0)) * glm::rotate(glm::radians(100.0f), glm::vec3(1, 1, 0)) * glm::scale(glm::vec3(2.0f));
-	/////////////
 
 	glCullFace(GL_FRONT);
 	int iterm = -108;
@@ -626,8 +545,6 @@ void renderScene()
 	while (i--) {
 		createDepthMap(&fishModel, fish_model_matrix(fishes[i]));
 	}
-	//createDepthMap(&renderModel, renderTarget);
-	//createDepthMap(&sphereModel, planetModelMatrix);
 	createDepthMap(&dalekModel, dalekModelMatrix);
 	createDepthMap(&shipModel, shipModelMatrix);
 	createDepthMap(&shipModel, sink);
@@ -639,13 +556,7 @@ void renderScene()
 	
 	//skybox
 	drawSkybox(glm::translate(glm::vec3(cameraPos.x, cameraPos.y, cameraPos.z)), skybox);
-	//
-	//drawObjectTextureShadows(&renderModel, renderTarget, textureAsteroid);
-	drawObjectUberShader(&dalekModel, dalekModelMatrix, textureDalek, textureNoneNormal, textureNoneMetallic, textureNoneSmoothness);
-	//drawObjectMaterial(&dalekModel, dalekModelMatrix, textureDalek, textureNoneMetallic, textureNoneSmoothness);
-	//drawObjectTextureShadows(&sphereModel, planetModelMatrix, textureEarth);
-	//drawObjectTextureNormal(&sphereModel, planetModelMatrix, textureEarth, textureEarthNormal);
-	//drawObjectTextureNormalShadow(&sphereModel, planetModelMatrix, textureEarth, textureEarthNormal);
+	drawObjectTextureShadows(&dalekModel, dalekModelMatrix, textureDalek);
 	iterm = -108;
 	loopi = 0;
 	for (loopi = 0; loopi < 3; loopi++) {
@@ -658,10 +569,8 @@ void renderScene()
 	while (i--) {
 		drawObjectTexture(&fishModel, fish_model_matrix(fishes[i]), textureFish);
 	}
-	drawObjectUberShader(&shipModel, shipModelMatrix, textureShip, textureShipNormal, textureShipMetallic, textureShipSmoothness);
-	//drawObjectMaterial(&shipModel, shipModelMatrix, textureShip, textureShipMetallic, textureShipSmoothness);
-	drawObjectUberShader(&shipModel, sink, textureSink, textureShipNormal, textureShipMetallic, textureShipSmoothness);
-	//
+	drawObjectTextureShadows(&shipModel, shipModelMatrix, textureShip);
+	drawObjectTextureShadows(&shipModel, sink, textureSink);
 
 	glutSwapBuffers();
 }
